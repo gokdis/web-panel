@@ -8,11 +8,30 @@ import {
 } from "@heroicons/react/24/outline";
 import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Overview from "./Overview";
+import Charts from "./Charts";
 
 const navigation = [
-  { name: "Database", href: "#", icon: CircleStackIcon, current: true },
-  { name: "Charts", href: "#", icon: ChartPieIcon, current: false },
-  { name: "Settings", href: "#", icon: Cog6ToothIcon, current: false },
+  {
+    name: "Database",
+    href: "#",
+    current: true,
+    icon: CircleStackIcon,
+    component: "Database",
+  },
+  {
+    name: "Charts",
+    href: "#",
+    current: false,
+    icon: ChartPieIcon,
+    component: "Charts",
+  },
+  {
+    name: "Settings",
+    href: "#",
+    current: false,
+    icon: Cog6ToothIcon,
+    component: "Settings",
+  },
 ];
 
 function classNames(...classes) {
@@ -21,6 +40,11 @@ function classNames(...classes) {
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeComponent, setActiveComponent] = useState("Database");
+
+  const handleNavigationClick = (componentName) => {
+    setActiveComponent(componentName);
+  };
 
   return (
     <>
@@ -87,7 +111,12 @@ export default function App() {
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
                             {navigation.map((item) => (
-                              <li key={item.name}>
+                              <li
+                                key={item.name}
+                                onClick={() =>
+                                  handleNavigationClick(item.component)
+                                }
+                              >
                                 <a
                                   href={item.href}
                                   className={classNames(
@@ -128,11 +157,14 @@ export default function App() {
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
-                      <li key={item.name}>
+                      <li
+                        key={item.name}
+                        onClick={() => handleNavigationClick(item.component)}
+                      >
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
+                            item.component === activeComponent
                               ? "bg-gray-800 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -187,7 +219,10 @@ export default function App() {
             </div>
           </div>
 
-          <Overview />
+          <div className="">
+            {activeComponent === "Database" && <Overview />}
+            {activeComponent === "Charts" && <Charts />}
+          </div>
         </div>
       </div>
     </>
