@@ -41,7 +41,7 @@ export default function Overview() {
             }
           }
         );
-        //setPersons(response.data);
+        setPersons(response.data);
         console.log(res.data);
       } catch (error) {
         //console.error("Error fetching persons data:", error);
@@ -152,7 +152,7 @@ export default function Overview() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {items.map((item) => (
+              {persons.map((item) => (
                 <tr key={item.id}>
                   <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
                     <div className="flex items-center gap-x-4">
