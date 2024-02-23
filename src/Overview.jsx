@@ -47,7 +47,7 @@ export default function Overview() {
         //console.error("Error fetching persons data:", error);
       }
     };
-
+2
     fetchData();
   }, []);
 
