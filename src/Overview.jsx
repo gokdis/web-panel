@@ -1,3 +1,6 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 const stats = [
   { name: "Number of users", value: "405" },
   { name: "Connect time", value: "3.65", unit: "seconds" },
@@ -17,7 +20,6 @@ const items = [
     phone: "555-555-55-55",
     adress: "Australia",
   },
-
 ];
 
 function classNames(...classes) {
@@ -25,6 +27,30 @@ function classNames(...classes) {
 }
 
 export default function Overview() {
+  const [persons, setPersons] = useState(null);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://gokdis.erke.biz.tr/api/v1/person",
+          {
+            auth: {
+              username: import.meta.env.VITE_REACT_APP_USERNAME,
+              password: import.meta.env.VITE_REACT_APP_PASSWORD
+            }
+          }
+        );
+        //setPersons(response.data);
+        console.log(res.data);
+      } catch (error) {
+        //console.error("Error fetching persons data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <main>
@@ -139,13 +165,13 @@ export default function Overview() {
                     {item.email}
                   </td>
                   <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.dob}
+                    {item.age}
                   </td>
                   <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.phone}
+                    {item.role}
                   </td>
                   <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.adress}
+                    {item.role}
                   </td>
                 </tr>
               ))}
