@@ -27,28 +27,27 @@ function classNames(...classes) {
 }
 
 export default function Overview() {
-  const [persons, setPersons] = useState(null);
-  
+  const [person, setPerson] = useState(null);
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPerson = async () => {
       try {
         const res = await axios.get(
-          "https://gokdis.erke.biz.tr/api/v1/person",
+          import.meta.env.VITE_REACT_APP_API +"/person",
           {
             auth: {
               username: import.meta.env.VITE_REACT_APP_USERNAME,
-              password: import.meta.env.VITE_REACT_APP_PASSWORD
-            }
+              password: import.meta.env.VITE_REACT_APP_PASSWORD,
+            },
           }
         );
-        setPersons(response.data);
-        console.log(res.data);
+        setPerson(res.data);
       } catch (error) {
-        //console.error("Error fetching persons data:", error);
+        console.error("Error fetching persons data:", error);
       }
     };
-2
-    fetchData();
+
+    fetchPerson();
   }, []);
 
   return (
@@ -151,31 +150,33 @@ export default function Overview() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
-              {persons.map((item) => (
-                <tr key={item.id}>
-                  <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-                    <div className="flex items-center gap-x-4">
-                      <div className="truncate text-sm font-medium leading-6 text-white">
-                        {item.name}
+            {person && person.length && (
+              <tbody className="divide-y divide-white/5">
+                {person.map((item) => (
+                  <tr key={item.email}>
+                    <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                      <div className="flex items-center gap-x-4">
+                        <div className="truncate text-sm font-medium leading-6 text-white">
+                          {item.name}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.email}
-                  </td>
-                  <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.age}
-                  </td>
-                  <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.role}
-                  </td>
-                  <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                    {item.role}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                      {item.email}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                      {item.age}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                      {item.role}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                      {item.role}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
       </main>
