@@ -7,18 +7,18 @@ import {
   ChartPieIcon,
   WifiIcon,
 } from "@heroicons/react/24/outline";
-import Overview from "./Overview";
+import Users from "./Users/Users";
 import Charts from "./Charts";
 import Beacons from "./Beacons";
 import Search from "./Search";
 
 const navigation = [
   {
-    name: "Database",
+    name: "Users",
     href: "#",
     current: true,
     icon: CircleStackIcon,
-    component: "Database",
+    component: "Users",
   },
   {
     name: "Beacons",
@@ -49,7 +49,7 @@ function classNames(...classes) {
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeComponent, setActiveComponent] = useState("Database");
+  const [activeComponent, setActiveComponent] = useState("Users");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleNavigationClick = (componentName) => {
@@ -201,8 +201,8 @@ export default function App() {
             setSidebarOpen={setSidebarOpen}
           />
           <div className="">
-            {activeComponent === "Database" && (
-              <Overview searchQuery={searchQuery} />
+            {activeComponent === "Users" && (
+              <Users searchQuery={searchQuery} />
             )}
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />

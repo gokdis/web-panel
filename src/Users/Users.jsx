@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import UserAddDialog from "./UserAddDialog";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -10,10 +11,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Overview({ searchQuery }) {
+export default function Users({ searchQuery }) {
   const [person, setPerson] = useState(null);
   const [connectTime, setConnectTime] = useState(null);
   const [serverStatus, setServerStatus] = useState("success");
+  const [addDialog, setAddDialog] = useState(false);
 
   const countUsers = (persons) =>
     persons.filter((item) => item.role === "ROLE_USER").length;
@@ -76,6 +78,7 @@ export default function Overview({ searchQuery }) {
 
   return (
     <>
+      <UserAddDialog open={addDialog} setOpen={setAddDialog} />
       <main>
         <header>
           {/* Heading */}
@@ -150,7 +153,8 @@ export default function Overview({ searchQuery }) {
                   <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
                     <button
                       type="button"
-                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      className="block rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+                      onClick={() => setAddDialog(true)}
                     >
                       Add user
                     </button>
@@ -158,7 +162,7 @@ export default function Overview({ searchQuery }) {
                   <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
                     <button
                       type="button"
-                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      className="block rounded-md bg-red-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
                     >
                       Delete user
                     </button>
@@ -215,42 +219,42 @@ export default function Overview({ searchQuery }) {
                           </tr>
                         </thead>
                         {person && person.length > 0 && (
-                            <tbody className="divide-y divide-gray-800">
-                              {filteredPersons.map((person) => (
-                                <tr key={person.email}>
-                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
-                                    {person.role}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                    {person.name}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                    {person.surname}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                    {person.email}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                    {person.age}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                    {person.gender}
-                                  </td>
-                                  <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                    <a
-                                      href="#"
-                                      className="text-indigo-400 hover:text-indigo-300"
-                                    >
-                                      Edit
-                                      <span className="sr-only">
-                                        , {person.name}
-                                      </span>
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          )}
+                          <tbody className="divide-y divide-gray-800">
+                            {filteredPersons.map((person) => (
+                              <tr key={person.email}>
+                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
+                                  {person.role}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {person.name}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {person.surname}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {person.email}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {person.age}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {person.gender}
+                                </td>
+                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                  <a
+                                    href="#"
+                                    className="text-indigo-400 hover:text-indigo-300"
+                                  >
+                                    Edit
+                                    <span className="sr-only">
+                                      , {person.name}
+                                    </span>
+                                  </a>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        )}
                       </table>
                     </div>
                   </div>
