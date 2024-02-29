@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Search from "./Search";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -11,48 +10,32 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Overview() {
-  const [person, setPerson] = useState(null);
+export default function Beacons() {
+  const [beacon, setBeacon] = useState(null);
   const [connectTime, setConnectTime] = useState(null);
   const [serverStatus, setServerStatus] = useState("success");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const countUsers = (persons) =>
-    persons.filter((item) => item.role === "ROLE_USER").length;
-  const countAdmins = (persons) =>
-    persons.filter((item) => item.role === "ROLE_ADMIN").length;
 
   const stats = [
     {
-      name: "Number of users",
-      value: person ? countUsers(person).toString() : "0",
+      name: "Number of beacons",
+      value: beacon ? beacon.length.toString() : "0",
     },
-    {
-      name: "Number of admins",
-      value: person ? countAdmins(person).toString() : "0",
-    },
+    { name: "RSSI at 1 meter", value: "-65",  unit:"db"},
     {
       name: "Connect time",
       value: connectTime !== null ? connectTime : "0",
       unit: "seconds",
     },
-    { name: "API", value: "api/v1/person" },
+    { name: "API", value: "api/v1/beacon" },
   ];
 
-  const filteredPersons = person
-    ? person.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.surname.toLowerCase().includes(searchQuery.toLowerCase()) 
-      )
-    : [];
-
   useEffect(() => {
-    const fetchPerson = async () => {
+    const fetchBeacon = async () => {
       try {
         const startTime = performance.now();
 
         const res = await axios.get(
-          import.meta.env.VITE_REACT_APP_API + "/person",
+          import.meta.env.VITE_REACT_APP_API + "/beacon",
           {
             auth: {
               username: import.meta.env.VITE_REACT_APP_USERNAME,
@@ -63,22 +46,21 @@ export default function Overview() {
 
         const endTime = performance.now();
         const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-        setPerson(res.data);
+        setBeacon(res.data);
         setConnectTime(timeTaken);
         setServerStatus("success");
       } catch (error) {
-        console.error("Error fetching persons data:", error);
+        console.error("Error fetching beacons data:", error);
         setServerStatus("error");
       }
     };
 
-    fetchPerson();
+    fetchBeacon();
   }, []);
 
   return (
     <>
       <main>
-        <Search setSearchQuery={setSearchQuery}/>
         <header>
           {/* Heading */}
           <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">
@@ -137,7 +119,7 @@ export default function Overview() {
         {/* List */}
         <div className="border-t border-white/10 pt-11">
           <h2 className="px-4 text-base font-semibold leading-7 text-white sm:px-6 lg:px-8">
-            User Table
+            Table
           </h2>
           <table className="mt-6 w-full whitespace-nowrap text-left">
             <colgroup>
@@ -153,66 +135,46 @@ export default function Overview() {
                   scope="col"
                   className="hidden py-2 pl-6 pr-8 font-semibold md:table-cell lg:pr-20"
                 >
-                  Role
+                  Mac
                 </th>
                 <th
                   scope="col"
                   className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
                 >
-                  Name
+                  Id
                 </th>
                 <th
                   scope="col"
                   className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
                 >
-                  Surname
+                  X
                 </th>
                 <th
                   scope="col"
                   className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
                 >
-                  Email
-                </th>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  Date of birth
-                </th>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  Gender
+                  Y
                 </th>
               </tr>
             </thead>
-            {filteredPersons.length > 0 && (
+            {beacon && beacon.length && (
               <tbody className="divide-y divide-white/5">
-                {person &&
-                  person.length &&
-                  filteredPersons.map((item) => (
-                    <tr key={item.email}>
-                      <td className="hidden py-4 pl-6 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.role}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.name}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.surname}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.email}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.age}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                        {item.gender}
-                      </td>
-                    </tr>
-                  ))}
+                {beacon.map((item) => (
+                  <tr key={item.mac}>
+                    <td className="hidden py-4 pl-6 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
+                      {item.mac}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
+                      {item.id}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
+                      {item.x}
+                    </td>
+                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
+                      {item.y}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             )}
           </table>
