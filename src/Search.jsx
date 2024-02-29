@@ -1,9 +1,6 @@
 import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
 
-export default function Search({setSearchQuery}) {
-    
-
+export default function Search({ setSearchQuery, setSidebarOpen }) {
   return (
     <>
       {/* Sticky search header */}

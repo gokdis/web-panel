@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Search from "./Search";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -11,11 +10,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Overview() {
+export default function Overview({
+  searchQuery,
+}) {
   const [person, setPerson] = useState(null);
   const [connectTime, setConnectTime] = useState(null);
   const [serverStatus, setServerStatus] = useState("success");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const countUsers = (persons) =>
     persons.filter((item) => item.role === "ROLE_USER").length;
@@ -40,9 +40,10 @@ export default function Overview() {
   ];
 
   const filteredPersons = person
-    ? person.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.surname.toLowerCase().includes(searchQuery.toLowerCase()) 
+    ? person.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.surname.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 
@@ -78,7 +79,7 @@ export default function Overview() {
   return (
     <>
       <main>
-        <Search setSearchQuery={setSearchQuery}/>
+        
         <header>
           {/* Heading */}
           <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">

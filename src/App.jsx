@@ -10,6 +10,7 @@ import {
 import Overview from "./Overview";
 import Charts from "./Charts";
 import Beacons from "./Beacons";
+import Search from "./Search";
 
 const navigation = [
   {
@@ -49,6 +50,7 @@ function classNames(...classes) {
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeComponent, setActiveComponent] = useState("Database");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleNavigationClick = (componentName) => {
     setActiveComponent(componentName);
@@ -128,7 +130,7 @@ export default function App() {
                                 <a
                                   href={item.href}
                                   className={classNames(
-                                    item.current
+                                    item.component === activeComponent
                                       ? "bg-gray-800 text-white"
                                       : "text-gray-400 hover:text-white hover:bg-gray-800",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -194,10 +196,14 @@ export default function App() {
         </div>
 
         <div className="xl:pl-72">
-
-
+          <Search
+            setSearchQuery={setSearchQuery}
+            setSidebarOpen={setSidebarOpen}
+          />
           <div className="">
-            {activeComponent === "Database" && <Overview />}
+            {activeComponent === "Database" && (
+              <Overview searchQuery={searchQuery} />
+            )}
             {activeComponent === "Charts" && <Charts />}
             {activeComponent === "Beacons" && <Beacons />}
           </div>
