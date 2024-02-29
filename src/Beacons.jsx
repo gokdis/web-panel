@@ -10,7 +10,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Beacons() {
+export default function Beacons({ searchQuery }) {
   const [beacon, setBeacon] = useState(null);
   const [connectTime, setConnectTime] = useState(null);
   const [serverStatus, setServerStatus] = useState("success");
@@ -20,7 +20,7 @@ export default function Beacons() {
       name: "Number of beacons",
       value: beacon ? beacon.length.toString() : "0",
     },
-    { name: "RSSI at 1 meter", value: "-65",  unit:"db"},
+    { name: "RSSI at 1 meter", value: "-65", unit: "db" },
     {
       name: "Connect time",
       value: connectTime !== null ? connectTime : "0",
@@ -28,6 +28,13 @@ export default function Beacons() {
     },
     { name: "API", value: "api/v1/beacon" },
   ];
+
+  // TODO: Add id filtering
+  const filteredBeacons = beacon
+    ? beacon.filter((item) =>
+        item.mac.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   useEffect(() => {
     const fetchBeacon = async () => {
@@ -116,68 +123,114 @@ export default function Beacons() {
           </div>
         </header>
 
-        {/* List */}
-        <div className="border-t border-white/10 pt-11">
-          <h2 className="px-4 text-base font-semibold leading-7 text-white sm:px-6 lg:px-8">
-            Table
-          </h2>
-          <table className="mt-6 w-full whitespace-nowrap text-left">
-            <colgroup>
-              <col className="lg:w-1/12" />
-              <col className="lg:w-1/12" />
-              <col className="lg:w-1/12" />
-              <col className="lg:w-1/12" />
-              <col className="lg:w-1/12" />
-            </colgroup>
-            <thead className="border-b border-white/10 text-sm leading-6 text-white">
-              <tr>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-6 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  Mac
-                </th>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  Id
-                </th>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  X
-                </th>
-                <th
-                  scope="col"
-                  className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                >
-                  Y
-                </th>
-              </tr>
-            </thead>
-            {beacon && beacon.length && (
-              <tbody className="divide-y divide-white/5">
-                {beacon.map((item) => (
-                  <tr key={item.mac}>
-                    <td className="hidden py-4 pl-6 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                      {item.mac}
-                    </td>
-                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                      {item.id}
-                    </td>
-                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                      {item.x}
-                    </td>
-                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-200 md:table-cell lg:pr-20">
-                      {item.y}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
-          </table>
+        {/* Table */}
+        <div className="">
+          <div className="mx-auto ">
+            <div className=" py-10">
+              <div className="px-4 sm:px-6 lg:px-8">
+                <div className="sm:flex sm:items-center">
+                  <div className="sm:flex-auto">
+                    <h1 className="text-base font-semibold leading-6 text-white">
+                      Users
+                    </h1>
+                    <p className="mt-2 text-sm text-gray-300">
+                      A list of all the users including their role, name, email
+                      and age.
+                    </p>
+                  </div>
+                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
+                    <button
+                      type="button"
+                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    >
+                      Add beacon
+                    </button>
+                  </div>
+                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
+                    <button
+                      type="button"
+                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    >
+                      Delete beacon
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-8 flow-root">
+                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                      <table className="min-w-full divide-y divide-gray-700">
+                        <thead>
+                          <tr>
+                            <th
+                              scope="col"
+                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0"
+                            >
+                              Mac
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-white"
+                            >
+                              Id
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-white"
+                            >
+                              X
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-white"
+                            >
+                              Y
+                            </th>
+                            <th
+                              scope="col"
+                              className="relative py-3.5 pl-3 pr-4 sm:pr-0"
+                            >
+                              <span className="sr-only">Edit</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        {beacon && beacon.length && (
+                          <tbody className="divide-y divide-gray-800">
+                            {filteredBeacons.map((beacon) => (
+                              <tr key={beacon.mac}>
+                                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
+                                  {beacon.mac}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {beacon.id}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {beacon.x}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
+                                  {beacon.y}
+                                </td>
+                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                  <a
+                                    href="#"
+                                    className="text-indigo-400 hover:text-indigo-300"
+                                  >
+                                    Edit
+                                    <span className="sr-only">
+                                      , {beacon.mac}
+                                    </span>
+                                  </a>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        )}
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </>

@@ -204,8 +204,10 @@ export default function App() {
             {activeComponent === "Database" && (
               <Overview searchQuery={searchQuery} />
             )}
+            {activeComponent === "Beacons" && (
+              <Beacons searchQuery={searchQuery} />
+            )}
             {activeComponent === "Charts" && <Charts />}
-            {activeComponent === "Beacons" && <Beacons />}
           </div>
         </div>
       </div>
