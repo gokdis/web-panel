@@ -1,9 +1,58 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
 
-export default function UserAddDialog({ open, setOpen }) {
+export default function UserAddDialog({ open, setOpen, fetchPerson }) {
   const cancelButtonRef = useRef(null);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "",
+    name: "",
+    surname: "",
+    age: "",
+    gender: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = async () => {
+    try {
+      const formDataNew = {
+        ...formData,
+        age: parseInt(formData.age, 10),
+      };
+
+      const jsonFormData = JSON.stringify(formDataNew);
+      console.log(jsonFormData);
+      const res = await axios.post(
+        import.meta.env.VITE_REACT_APP_API + "/person",
+        jsonFormData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username: import.meta.env.VITE_REACT_APP_USERNAME,
+            password: import.meta.env.VITE_REACT_APP_PASSWORD,
+          },
+        }
+      );
+
+      fetchPerson();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error updating user", error);
+    }
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -70,6 +119,8 @@ export default function UserAddDialog({ open, setOpen }) {
                         type="text"
                         name="name"
                         id="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         placeholder="Jane"
                       />
@@ -88,8 +139,30 @@ export default function UserAddDialog({ open, setOpen }) {
                         type="text"
                         name="surname"
                         id="surname"
+                        value={formData.surname}
+                        onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         placeholder="Smith"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Password
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        placeholder="******"
                       />
                     </div>
                   </div>
@@ -103,9 +176,11 @@ export default function UserAddDialog({ open, setOpen }) {
                     </label>
                     <div className="mt-2">
                       <input
-                        type="text"
+                        type="email"
                         name="email"
                         id="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         placeholder="janesmith@example.com"
                       />
@@ -114,18 +189,20 @@ export default function UserAddDialog({ open, setOpen }) {
 
                   <div className="mb-2">
                     <label
-                      htmlFor="date"
+                      htmlFor="age"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      Date of birth
+                      Age
                     </label>
                     <div className="mt-2">
                       <input
                         type="text"
-                        name="date"
-                        id="date"
+                        name="age"
+                        id="age"
+                        value={formData.age}
+                        onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="23/05/1998"
+                        placeholder="23"
                       />
                     </div>
                   </div>
@@ -141,9 +218,14 @@ export default function UserAddDialog({ open, setOpen }) {
                   <select
                     id="gender"
                     name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue=""
                   >
+                    <option value="" selected disabled hidden>
+                      Choose here
+                    </option>
+
                     <option>Male</option>
                     <option>Female</option>
                     <option>Other</option>
@@ -152,20 +234,23 @@ export default function UserAddDialog({ open, setOpen }) {
 
                 <div className="mb-2 ml-4 mr-4">
                   <label
-                    htmlFor="gender"
+                    htmlFor="role"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Role
                   </label>
                   <select
-                    id="gender"
-                    name="gender"
+                    id="role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue=""
                   >
-                    <option>Admin</option>
-                    <option>Mod</option>
-                    <option>User</option>
+                    <option value="" selected disabled hidden>
+                      Choose here
+                    </option>
+                    <option>ROLE_ADMIN</option>
+                    <option>ROLE_MOD</option>
                   </select>
                 </div>
 
@@ -174,7 +259,7 @@ export default function UserAddDialog({ open, setOpen }) {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
-                    onClick={() => setOpen(false)}
+                    onClick={handleFormSubmit}
                   >
                     Add
                   </button>

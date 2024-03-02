@@ -46,44 +46,67 @@ export default function Users({ searchQuery }) {
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.surname.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  useEffect(() => {
-    const fetchPerson = async () => {
-      try {
-        const startTime = performance.now();
 
-        const res = await axios.get(
-          import.meta.env.VITE_REACT_APP_API + "/person",
-          {
-            auth: {
-              username: import.meta.env.VITE_REACT_APP_USERNAME,
-              password: import.meta.env.VITE_REACT_APP_PASSWORD,
-            },
-          }
-        );
+  const fetchPerson = async () => {
+    try {
+      const startTime = performance.now();
 
-        const endTime = performance.now();
-        const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-
-        if (Array.isArray(res.data)) {
-          setPerson(res.data);
-          setConnectTime(timeTaken);
-          setServerStatus("success");
-        } else {
-          console.log("Authorization error");
-          setServerStatus("error");
+      const res = await axios.get(
+        import.meta.env.VITE_REACT_APP_API + "/person",
+        {
+          auth: {
+            username: import.meta.env.VITE_REACT_APP_USERNAME,
+            password: import.meta.env.VITE_REACT_APP_PASSWORD,
+          },
         }
-      } catch (error) {
-        console.error("Error fetching persons data:", error);
+      );
+
+      const endTime = performance.now();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      if (Array.isArray(res.data)) {
+        setPerson(res.data);
+        setConnectTime(timeTaken);
+        setServerStatus("success");
+      } else {
+        console.log("Authorization error");
         setServerStatus("error");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching persons data:", error);
+      setServerStatus("error");
+    }
+  };
 
+  const handleRemoveUser = async (person) => {
+    const email = person.email;
+
+    try {
+      const res = await axios.delete(
+        import.meta.env.VITE_REACT_APP_API + "/person/" + email,
+        {
+          auth: {
+            username: import.meta.env.VITE_REACT_APP_USERNAME,
+            password: import.meta.env.VITE_REACT_APP_PASSWORD,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        fetchPerson();
+      }
+    } catch (error) {
+      //console.error("Error removing person", error);
+    }
+  };
+
+  useEffect(() => {
     fetchPerson();
   }, []);
 
   return (
     <>
-      <UserAddDialog open={addDialog} setOpen={setAddDialog} />
+      <UserAddDialog open={addDialog} setOpen={setAddDialog} fetchPerson={fetchPerson} />
       <main>
         <header>
           {/* Heading */}
@@ -200,7 +223,7 @@ export default function Users({ searchQuery }) {
                               scope="col"
                               className="px-3 py-3.5 text-left text-sm font-semibold text-white"
                             >
-                              Date of Birth
+                              Age
                             </th>
                             <th
                               scope="col"
@@ -242,6 +265,7 @@ export default function Users({ searchQuery }) {
                                   <a
                                     href="#"
                                     className="text-red-400 hover:text-indigo-300"
+                                    onClick={() => handleRemoveUser(person)}
                                   >
                                     Remove
                                     <span className="sr-only">
