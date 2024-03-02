@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BeaconAddDialog from "./BeaconAddDialog";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -11,9 +12,10 @@ function classNames(...classes) {
 }
 
 export default function Beacons({ searchQuery }) {
-  const [beacon, setBeacon] = useState(null);
+  const [beacon, setBeacon] = useState([]);
   const [connectTime, setConnectTime] = useState(null);
-  const [serverStatus, setServerStatus] = useState("success");
+  const [serverStatus, setServerStatus] = useState("error");
+  const [addDialog, setAddDialog] = useState(false);
 
   const stats = [
     {
@@ -36,37 +38,70 @@ export default function Beacons({ searchQuery }) {
       )
     : [];
 
-  useEffect(() => {
-    const fetchBeacon = async () => {
-      try {
-        const startTime = performance.now();
+  const fetchBeacon = async () => {
+    try {
+      const startTime = performance.now();
 
-        const res = await axios.get(
-          import.meta.env.VITE_REACT_APP_API + "/beacon",
-          {
-            auth: {
-              username: import.meta.env.VITE_REACT_APP_USERNAME,
-              password: import.meta.env.VITE_REACT_APP_PASSWORD,
-            },
-          }
-        );
+      const res = await axios.get(
+        import.meta.env.VITE_REACT_APP_API + "/beacon",
+        {
+          auth: {
+            username: import.meta.env.VITE_REACT_APP_USERNAME,
+            password: import.meta.env.VITE_REACT_APP_PASSWORD,
+          },
+        }
+      );
 
-        const endTime = performance.now();
-        const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+      const endTime = performance.now();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      if (Array.isArray(res.data)) {
         setBeacon(res.data);
         setConnectTime(timeTaken);
         setServerStatus("success");
-      } catch (error) {
-        console.error("Error fetching beacons data:", error);
+      } else {
+        console.log("Authorization error");
         setServerStatus("error");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching beacons data:", error);
+      setServerStatus("error");
+    }
+  };
 
+  const handleRemove = async (beacon) => {
+    const mac = beacon.mac;
+
+    try {
+      const res = await axios.delete(
+        import.meta.env.VITE_REACT_APP_API + "/beacon/" + mac,
+        {
+          auth: {
+            username: import.meta.env.VITE_REACT_APP_USERNAME,
+            password: import.meta.env.VITE_REACT_APP_PASSWORD,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        fetchBeacon();
+      }
+    } catch (error) {
+      //console.error("Error removing beacon", error);
+    }
+  };
+
+  useEffect(() => {
     fetchBeacon();
   }, []);
 
   return (
     <>
+      <BeaconAddDialog
+        open={addDialog}
+        setOpen={setAddDialog}
+        fetchBeacon={fetchBeacon}
+      />
       <main>
         <header>
           {/* Heading */}
@@ -131,29 +166,23 @@ export default function Beacons({ searchQuery }) {
                 <div className="sm:flex sm:items-center">
                   <div className="sm:flex-auto">
                     <h1 className="text-base font-semibold leading-6 text-white">
-                      Users
+                      Beacons
                     </h1>
                     <p className="mt-2 text-sm text-gray-300">
-                      A list of all the users including their role, name, email
-                      and age.
+                      A list of all the beacons including their Mac, Id, and
+                      coordinates.
                     </p>
                   </div>
                   <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
                     <button
                       type="button"
-                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                      className="block rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+                      onClick={() => setAddDialog(true)}
                     >
                       Add beacon
                     </button>
                   </div>
-                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
-                    <button
-                      type="button"
-                      className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                    >
-                      Delete beacon
-                    </button>
-                  </div>
+                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none"></div>
                 </div>
                 <div className="mt-8 flow-root">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -189,11 +218,11 @@ export default function Beacons({ searchQuery }) {
                               scope="col"
                               className="relative py-3.5 pl-3 pr-4 sm:pr-0"
                             >
-                              <span className="sr-only">Edit</span>
+                              <span className="sr-only">Remove</span>
                             </th>
                           </tr>
                         </thead>
-                        {beacon && beacon.length && (
+                        {beacon && beacon.length > 0 && (
                           <tbody className="divide-y divide-gray-800">
                             {filteredBeacons.map((beacon) => (
                               <tr key={beacon.mac}>
@@ -212,11 +241,12 @@ export default function Beacons({ searchQuery }) {
                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                   <a
                                     href="#"
-                                    className="text-indigo-400 hover:text-indigo-300"
+                                    className="text-red-400 hover:text-indigo-300"
+                                    onClick={() => handleRemove(beacon)}
                                   >
-                                    Edit
+                                    Remove
                                     <span className="sr-only">
-                                      , {beacon.mac}
+                                      , {beacon.name}
                                     </span>
                                   </a>
                                 </td>

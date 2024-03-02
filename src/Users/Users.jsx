@@ -78,7 +78,7 @@ export default function Users({ searchQuery }) {
     }
   };
 
-  const handleRemoveUser = async (person) => {
+  const handleRemove = async (person) => {
     const email = person.email;
 
     try {
@@ -235,7 +235,7 @@ export default function Users({ searchQuery }) {
                               scope="col"
                               className="relative py-3.5 pl-3 pr-4 sm:pr-0"
                             >
-                              <span className="sr-only">Edit</span>
+                              <span className="sr-only">Remove</span>
                             </th>
                           </tr>
                         </thead>
@@ -265,7 +265,7 @@ export default function Users({ searchQuery }) {
                                   <a
                                     href="#"
                                     className="text-red-400 hover:text-indigo-300"
-                                    onClick={() => handleRemoveUser(person)}
+                                    onClick={() => handleRemove(person)}
                                   >
                                     Remove
                                     <span className="sr-only">

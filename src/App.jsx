@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Users from "./Users/Users";
 import Charts from "./Charts";
-import Beacons from "./Beacons";
+import Beacons from "./Beacons/Beacons";
 import Search from "./Search";
 
 const navigation = [
