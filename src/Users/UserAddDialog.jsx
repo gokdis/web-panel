@@ -45,19 +45,17 @@ export default function UserAddDialog({ open, setOpen }) {
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-2 sm:text-left">
                       <Dialog.Title
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
                         Add user
                       </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">Content</p>
-                      </div>
                     </div>
                   </div>
                 </div>
+
                 {/* Forms */}
                 <div className="ml-4 mr-4">
                   <div className="mb-2">
@@ -77,6 +75,7 @@ export default function UserAddDialog({ open, setOpen }) {
                       />
                     </div>
                   </div>
+
                   <div className="mb-2">
                     <label
                       htmlFor="surname"
@@ -94,6 +93,7 @@ export default function UserAddDialog({ open, setOpen }) {
                       />
                     </div>
                   </div>
+
                   <div className="mb-2">
                     <label
                       htmlFor="email"
@@ -111,12 +111,13 @@ export default function UserAddDialog({ open, setOpen }) {
                       />
                     </div>
                   </div>
+
                   <div className="mb-2">
                     <label
                       htmlFor="date"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      Email
+                      Date of birth
                     </label>
                     <div className="mt-2">
                       <input
@@ -128,6 +129,44 @@ export default function UserAddDialog({ open, setOpen }) {
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="mb-2 ml-4 mr-4">
+                  <label
+                    htmlFor="gender"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Gender
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue=""
+                  >
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div className="mb-2 ml-4 mr-4">
+                  <label
+                    htmlFor="gender"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Role
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    defaultValue=""
+                  >
+                    <option>Admin</option>
+                    <option>Mod</option>
+                    <option>User</option>
+                  </select>
                 </div>
 
                 {/* Buttons */}

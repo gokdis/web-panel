@@ -201,9 +201,7 @@ export default function App() {
             setSidebarOpen={setSidebarOpen}
           />
           <div className="">
-            {activeComponent === "Users" && (
-              <Users searchQuery={searchQuery} />
-            )}
+            {activeComponent === "Users" && <Users searchQuery={searchQuery} />}
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />
             )}

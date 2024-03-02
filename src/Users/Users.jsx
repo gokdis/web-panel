@@ -12,15 +12,17 @@ function classNames(...classes) {
 }
 
 export default function Users({ searchQuery }) {
-  const [person, setPerson] = useState(null);
+  const [person, setPerson] = useState([]);
   const [connectTime, setConnectTime] = useState(null);
-  const [serverStatus, setServerStatus] = useState("success");
+  const [serverStatus, setServerStatus] = useState("error");
   const [addDialog, setAddDialog] = useState(false);
 
   const countUsers = (persons) =>
     persons.filter((item) => item.role === "ROLE_USER").length;
   const countAdmins = (persons) =>
-    persons.filter((item) => item.role === "ROLE_ADMIN").length;
+    persons.filter(
+      (item) => item.role === "ROLE_ADMIN" || item.role === "ROLE_MOD"
+    ).length;
 
   const stats = [
     {
@@ -39,14 +41,11 @@ export default function Users({ searchQuery }) {
     { name: "API", value: "api/v1/person" },
   ];
 
-  const filteredPersons = person
-    ? person.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.surname.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
-
+  const filteredPersons = person.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.surname.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   useEffect(() => {
     const fetchPerson = async () => {
       try {
@@ -64,9 +63,15 @@ export default function Users({ searchQuery }) {
 
         const endTime = performance.now();
         const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-        setPerson(res.data);
-        setConnectTime(timeTaken);
-        setServerStatus("success");
+
+        if (Array.isArray(res.data)) {
+          setPerson(res.data);
+          setConnectTime(timeTaken);
+          setServerStatus("success");
+        } else {
+          console.log("Authorization error");
+          setServerStatus("error");
+        }
       } catch (error) {
         console.error("Error fetching persons data:", error);
         setServerStatus("error");
@@ -159,14 +164,7 @@ export default function Users({ searchQuery }) {
                       Add user
                     </button>
                   </div>
-                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
-                    <button
-                      type="button"
-                      className="block rounded-md bg-red-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
-                    >
-                      Delete user
-                    </button>
-                  </div>
+                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none"></div>
                 </div>
                 <div className="mt-8 flow-root">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -243,9 +241,9 @@ export default function Users({ searchQuery }) {
                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                   <a
                                     href="#"
-                                    className="text-indigo-400 hover:text-indigo-300"
+                                    className="text-red-400 hover:text-indigo-300"
                                   >
-                                    Edit
+                                    Remove
                                     <span className="sr-only">
                                       , {person.name}
                                     </span>
