@@ -106,7 +106,11 @@ export default function Users({ searchQuery }) {
 
   return (
     <>
-      <UserAddDialog open={addDialog} setOpen={setAddDialog} fetchPerson={fetchPerson} />
+      <UserAddDialog
+        open={addDialog}
+        setOpen={setAddDialog}
+        fetchPerson={fetchPerson}
+      />
       <main>
         <header>
           {/* Heading */}
