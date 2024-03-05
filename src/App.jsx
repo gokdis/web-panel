@@ -6,11 +6,13 @@ import {
   CircleStackIcon,
   ChartPieIcon,
   WifiIcon,
+  ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import Users from "./Users/Users";
 import Charts from "./Charts";
 import Beacons from "./Beacons/Beacons";
 import Search from "./Search";
+import Metrics from "./Metrics";
 
 const navigation = [
   {
@@ -35,6 +37,13 @@ const navigation = [
     component: "Charts",
   },
   {
+    name: "Metrics",
+    href: "#",
+    current: false,
+    icon: ChartBarIcon,
+    component: "Metrics",
+  },
+  {
     name: "Settings",
     href: "#",
     current: false,
@@ -54,6 +63,7 @@ export default function App() {
 
   const handleNavigationClick = (componentName) => {
     setActiveComponent(componentName);
+    setSidebarOpen(false);
   };
 
   return (
@@ -133,7 +143,7 @@ export default function App() {
                                     item.component === activeComponent
                                       ? "bg-gray-800 text-white"
                                       : "text-gray-400 hover:text-white hover:bg-gray-800",
-                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                                   )}
                                 >
                                   <item.icon
@@ -177,7 +187,7 @@ export default function App() {
                             item.component === activeComponent
                               ? "bg-gray-800 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-800",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                           )}
                         >
                           <item.icon
@@ -205,6 +215,7 @@ export default function App() {
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />
             )}
+            {activeComponent === "Metrics" && <Metrics />}
             {activeComponent === "Charts" && <Charts />}
           </div>
         </div>

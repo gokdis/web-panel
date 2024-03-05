@@ -1,5 +1,3 @@
 export default function Charts() {
-    return(<>
-    Charts
-    </>)
+  return <>Charts</>;
 }

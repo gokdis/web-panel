@@ -44,7 +44,7 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       fetchPerson();

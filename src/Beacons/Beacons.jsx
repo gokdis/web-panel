@@ -34,7 +34,7 @@ export default function Beacons({ searchQuery }) {
   // TODO: Add id filtering
   const filteredBeacons = beacon
     ? beacon.filter((item) =>
-        item.mac.toLowerCase().includes(searchQuery.toLowerCase())
+        item.mac.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : [];
 
@@ -49,7 +49,7 @@ export default function Beacons({ searchQuery }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       const endTime = performance.now();
@@ -80,7 +80,7 @@ export default function Beacons({ searchQuery }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       if (res.status === 200) {
@@ -137,9 +137,9 @@ export default function Beacons({ searchQuery }) {
                   statIdx % 2 === 1
                     ? "sm:border-l"
                     : statIdx === 2
-                    ? "lg:border-l"
-                    : "",
-                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8"
+                      ? "lg:border-l"
+                      : "",
+                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8",
                 )}
               >
                 <p className="text-sm font-medium leading-6 text-gray-400">

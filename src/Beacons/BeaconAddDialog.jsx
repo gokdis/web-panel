@@ -42,7 +42,7 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       fetchBeacon();

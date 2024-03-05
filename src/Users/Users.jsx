@@ -21,7 +21,7 @@ export default function Users({ searchQuery }) {
     persons.filter((item) => item.role === "ROLE_USER").length;
   const countAdmins = (persons) =>
     persons.filter(
-      (item) => item.role === "ROLE_ADMIN" || item.role === "ROLE_MOD"
+      (item) => item.role === "ROLE_ADMIN" || item.role === "ROLE_MOD",
     ).length;
 
   const stats = [
@@ -44,7 +44,7 @@ export default function Users({ searchQuery }) {
   const filteredPersons = person.filter(
     (item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.surname.toLowerCase().includes(searchQuery.toLowerCase())
+      item.surname.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const fetchPerson = async () => {
@@ -58,7 +58,7 @@ export default function Users({ searchQuery }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       const endTime = performance.now();
@@ -89,7 +89,7 @@ export default function Users({ searchQuery }) {
             username: import.meta.env.VITE_REACT_APP_USERNAME,
             password: import.meta.env.VITE_REACT_APP_PASSWORD,
           },
-        }
+        },
       );
 
       if (res.status === 200) {
@@ -146,9 +146,9 @@ export default function Users({ searchQuery }) {
                   statIdx % 2 === 1
                     ? "sm:border-l"
                     : statIdx === 2
-                    ? "lg:border-l"
-                    : "",
-                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8"
+                      ? "lg:border-l"
+                      : "",
+                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8",
                 )}
               >
                 <p className="text-sm font-medium leading-6 text-gray-400">
