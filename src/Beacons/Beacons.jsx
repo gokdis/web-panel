@@ -38,14 +38,16 @@ export default function Beacons({ searchQuery }) {
       )
     : [];
 
-  const axiosConfig = {
-    ...(import.meta.env.MODE !== "production" && {
+  let axiosConfig = {};
+
+  if (import.meta.env.MODE !== "production") {
+    axiosConfig = {
       auth: {
         username: import.meta.env.VITE_REACT_APP_USERNAME,
         password: import.meta.env.VITE_REACT_APP_PASSWORD,
       },
-    }),
-  };
+    };
+  }
 
   const fetchBeacon = async () => {
     try {
@@ -64,7 +66,7 @@ export default function Beacons({ searchQuery }) {
         setConnectTime(timeTaken);
         setServerStatus("success");
       } else {
-        console.log("Authorization error");
+        console.error("Authorization error");
         setServerStatus("error");
       }
     } catch (error) {
@@ -86,7 +88,7 @@ export default function Beacons({ searchQuery }) {
         fetchBeacon();
       }
     } catch (error) {
-      //console.error("Error removing beacon", error);
+      console.error("Error removing beacon", error);
     }
   };
 

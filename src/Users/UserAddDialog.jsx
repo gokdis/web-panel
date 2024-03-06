@@ -24,14 +24,16 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
     }));
   };
 
-  const axiosConfig = {
-    ...(import.meta.env.MODE !== "production" && {
+  let axiosConfig = {};
+
+  if (import.meta.env.MODE !== "production") {
+    axiosConfig = {
       auth: {
         username: import.meta.env.VITE_REACT_APP_USERNAME,
         password: import.meta.env.VITE_REACT_APP_PASSWORD,
       },
-    }),
-  };
+    };
+  }
 
   const handleFormSubmit = async () => {
     try {
@@ -41,7 +43,6 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
       };
 
       const jsonFormData = JSON.stringify(formDataNew);
-      console.log(jsonFormData);
       const res = await axios.post(
         import.meta.env.VITE_REACT_APP_API + "/person",
         jsonFormData,

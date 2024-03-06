@@ -21,6 +21,17 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
     }));
   };
 
+  let axiosConfig = {};
+
+  if (import.meta.env.MODE !== "production") {
+    axiosConfig = {
+      auth: {
+        username: import.meta.env.VITE_REACT_APP_USERNAME,
+        password: import.meta.env.VITE_REACT_APP_PASSWORD,
+      },
+    };
+  }
+
   const handleFormSubmit = async () => {
     try {
       const formDataNew = {
@@ -30,7 +41,6 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
       };
 
       const jsonFormData = JSON.stringify(formDataNew);
-      console.log(jsonFormData);
       const res = await axios.post(
         import.meta.env.VITE_REACT_APP_API + "/beacon",
         jsonFormData,
@@ -38,10 +48,7 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
           headers: {
             "Content-Type": "application/json",
           },
-          auth: {
-            username: import.meta.env.VITE_REACT_APP_USERNAME,
-            password: import.meta.env.VITE_REACT_APP_PASSWORD,
-          },
+          axiosConfig,
         },
       );
 

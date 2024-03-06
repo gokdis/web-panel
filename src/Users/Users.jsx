@@ -47,14 +47,16 @@ export default function Users({ searchQuery }) {
       item.surname.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const axiosConfig = {
-    ...(import.meta.env.MODE !== "production" && {
+  let axiosConfig = {};
+
+  if (import.meta.env.MODE !== "production") {
+    axiosConfig = {
       auth: {
         username: import.meta.env.VITE_REACT_APP_USERNAME,
         password: import.meta.env.VITE_REACT_APP_PASSWORD,
       },
-    }),
-  };
+    };
+  }
 
   const fetchPerson = async () => {
     try {
@@ -73,7 +75,7 @@ export default function Users({ searchQuery }) {
         setConnectTime(timeTaken);
         setServerStatus("success");
       } else {
-        console.log("Authorization error");
+        console.error("Authorization error");
         setServerStatus("error");
       }
     } catch (error) {
@@ -95,7 +97,7 @@ export default function Users({ searchQuery }) {
         fetchPerson();
       }
     } catch (error) {
-      //console.error("Error removing person", error);
+      console.error("Error removing person", error);
     }
   };
 
