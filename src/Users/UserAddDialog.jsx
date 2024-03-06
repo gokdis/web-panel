@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
-
+//TODO: Give error on empty text fields
 export default function UserAddDialog({ open, setOpen, fetchPerson }) {
   const cancelButtonRef = useRef(null);
   const [formData, setFormData] = useState({
@@ -24,6 +24,15 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
     }));
   };
 
+  const axiosConfig = {
+    ...(import.meta.env.MODE !== "production" && {
+      auth: {
+        username: import.meta.env.VITE_REACT_APP_USERNAME,
+        password: import.meta.env.VITE_REACT_APP_PASSWORD,
+      },
+    }),
+  };
+
   const handleFormSubmit = async () => {
     try {
       const formDataNew = {
@@ -40,10 +49,7 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
           headers: {
             "Content-Type": "application/json",
           },
-          auth: {
-            username: import.meta.env.VITE_REACT_APP_USERNAME,
-            password: import.meta.env.VITE_REACT_APP_PASSWORD,
-          },
+          axiosConfig,
         },
       );
 
@@ -222,7 +228,7 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
                     onChange={handleInputChange}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   >
-                    <option value="" selected disabled hidden>
+                    <option value="" disabled hidden>
                       Choose here
                     </option>
 
@@ -246,7 +252,7 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
                     onChange={handleInputChange}
                     className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   >
-                    <option value="" selected disabled hidden>
+                    <option value="" disabled hidden>
                       Choose here
                     </option>
                     <option>ROLE_ADMIN</option>

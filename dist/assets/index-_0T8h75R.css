@@ -787,6 +787,9 @@ select {
 .justify-between {
   justify-content: space-between;
 }
+.gap-px {
+  gap: 1px;
+}
 .gap-x-2 {
   -moz-column-gap: 0.5rem;
   column-gap: 0.5rem;
@@ -917,6 +920,9 @@ select {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+.bg-white\/5 {
+  background-color: #ffffff0d;
 }
 .bg-opacity-75 {
   --tw-bg-opacity: 0.75;
@@ -1240,18 +1246,6 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #fff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
 .placeholder\:text-gray-400::-moz-placeholder {
   --tw-text-opacity: 1;

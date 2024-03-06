@@ -38,18 +38,22 @@ export default function Beacons({ searchQuery }) {
       )
     : [];
 
+  const axiosConfig = {
+    ...(import.meta.env.MODE !== "production" && {
+      auth: {
+        username: import.meta.env.VITE_REACT_APP_USERNAME,
+        password: import.meta.env.VITE_REACT_APP_PASSWORD,
+      },
+    }),
+  };
+
   const fetchBeacon = async () => {
     try {
       const startTime = performance.now();
 
       const res = await axios.get(
         import.meta.env.VITE_REACT_APP_API + "/beacon",
-        {
-          auth: {
-            username: import.meta.env.VITE_REACT_APP_USERNAME,
-            password: import.meta.env.VITE_REACT_APP_PASSWORD,
-          },
-        },
+        axiosConfig,
       );
 
       const endTime = performance.now();
@@ -75,12 +79,7 @@ export default function Beacons({ searchQuery }) {
     try {
       const res = await axios.delete(
         import.meta.env.VITE_REACT_APP_API + "/beacon/" + mac,
-        {
-          auth: {
-            username: import.meta.env.VITE_REACT_APP_USERNAME,
-            password: import.meta.env.VITE_REACT_APP_PASSWORD,
-          },
-        },
+        axiosConfig,
       );
 
       if (res.status === 200) {
