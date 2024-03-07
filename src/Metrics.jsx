@@ -17,12 +17,18 @@ export default function Metrics() {
   const [serverStatus, setServerStatus] = useState("error");
   const [applicationReady, setApplicationReady] = useState(0);
   const [applicationStarted, setApplicationStarted] = useState(0);
+  const [diskFree, setDiskFree] = useState(0);
+  const [diskTotal, setDiskTotal] = useState(0);
+  const [httpRequest, setHttpRequest] = useState(0);
+  const [activeHttpRequest, setActiveHttpRequest] = useState(0);
+  const [processUptime, setProcessUptime] = useState(0);
+  const [logEvents, setLogEvents] = useState(0);
 
   const fetchMetrics = async () => {
     try {
       const res = await axios.get(
         import.meta.env.VITE_REACT_APP_METRICS,
-        axiosConfig
+        axiosConfig,
       );
       if (typeof res.data === "object" && res.data !== null) {
         setServerStatus("success");
@@ -39,7 +45,7 @@ export default function Metrics() {
     try {
       const res = await axios.get(
         import.meta.env.VITE_REACT_APP_METRICS + url,
-        axiosConfig
+        axiosConfig,
       );
       if (typeof res.data === "object" && res.data !== null) {
         setFunction(res.data.measurements[0].value);
@@ -53,7 +59,17 @@ export default function Metrics() {
     fetchMetrics();
     fetchMetric("/application.ready.time", setApplicationReady);
     fetchMetric("/application.started.time", setApplicationStarted);
+    fetchMetric("/disk.free", setDiskFree);
+    fetchMetric("/disk.total", setDiskTotal);
+    fetchMetric("/http.server.requests", setHttpRequest);
+    fetchMetric("/http.server.requests.active", setActiveHttpRequest);
+    fetchMetric("/process.uptime", setProcessUptime);
+    fetchMetric("/logback.events", setLogEvents);
   }, []);
+
+  const bytesToGigabytes = (bytes) => {
+    return (bytes / (1024 * 1024 * 1024)).toFixed(2);
+  };
 
   return (
     <>
@@ -91,8 +107,37 @@ export default function Metrics() {
             variable={applicationStarted}
             unit={"seconds"}
           />
+          <Metric
+            title={"Disk free"}
+            variable={bytesToGigabytes(diskFree)}
+            unit={"gigabytes"}
+          />
+          <Metric
+            title={"Disk total"}
+            variable={bytesToGigabytes(diskTotal)}
+            unit={"gigabytes"}
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
+          <Metric
+            title={"Total HTTP requests"}
+            variable={httpRequest}
+            unit={""}
+          />
+          <Metric
+            title={"Active HTTP requests"}
+            variable={activeHttpRequest}
+            unit={"requests"}
+          />
+          <Metric title={"Uptime"} variable={processUptime} unit={"seconds"} />
+          <Metric
+            title={"Logback events"}
+            variable={logEvents}
+            unit={"events"}
+          />
         </div>
       </div>
+
       <div className="bg-gray-900"></div>
     </>
   );
