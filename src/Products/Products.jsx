@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import UserAddDialog from "./UserAddDialog";
+import ProductAddDialog from "./ProductAddDialog";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -11,41 +11,32 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Users({ searchQuery }) {
-  const [person, setPerson] = useState([]);
+export default function Products({ searchQuery }) {
+  const [product, setProduct] = useState([]);
   const [connectTime, setConnectTime] = useState(null);
   const [serverStatus, setServerStatus] = useState("error");
   const [addDialog, setAddDialog] = useState(false);
 
-  const countUsers = (persons) =>
-    persons.filter((item) => item.role === "ROLE_USER").length;
-  const countAdmins = (persons) =>
-    persons.filter(
-      (item) => item.role === "ROLE_ADMIN" || item.role === "ROLE_MOD",
-    ).length;
-
   const stats = [
     {
-      name: "Number of users",
-      value: person ? countUsers(person).toString() : "0",
+      name: "Number of products",
+      value: product ? product.length.toString() : "0",
     },
-    {
-      name: "Number of admins",
-      value: person ? countAdmins(person).toString() : "0",
-    },
+    { name: "Number of sections", value: "0" },
     {
       name: "Connect time",
       value: connectTime !== null ? connectTime : "0",
       unit: "seconds",
     },
-    { name: "API", value: "api/v1/person" },
+    { name: "API", value: "api/v1/product" },
   ];
 
-  const filteredPersons = person.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.surname.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  // TODO: Add id filtering
+  const filteredProducts = product
+    ? product.filter((item) =>
+        item.mac.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : [];
 
   let axiosConfig = {};
 
@@ -58,12 +49,12 @@ export default function Users({ searchQuery }) {
     };
   }
 
-  const fetchPerson = async () => {
+  const fetchProduct = async () => {
     try {
       const startTime = performance.now();
 
       const res = await axios.get(
-        import.meta.env.VITE_REACT_APP_API + "/person",
+        import.meta.env.VITE_REACT_APP_API + "/product",
         axiosConfig,
       );
 
@@ -71,7 +62,7 @@ export default function Users({ searchQuery }) {
       const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
 
       if (Array.isArray(res.data)) {
-        setPerson(res.data);
+        setProduct(res.data);
         setConnectTime(timeTaken);
         setServerStatus("success");
       } else {
@@ -79,38 +70,38 @@ export default function Users({ searchQuery }) {
         setServerStatus("error");
       }
     } catch (error) {
-      console.error("Error fetching persons data:", error);
+      console.error("Error fetching product data:", error);
       setServerStatus("error");
     }
   };
 
-  const handleRemove = async (person) => {
-    const email = person.email;
+  const handleRemove = async (product) => {
+    const mac = product.mac;
 
     try {
       const res = await axios.delete(
-        import.meta.env.VITE_REACT_APP_API + "/person/" + email,
+        import.meta.env.VITE_REACT_APP_API + "/product/" + mac,
         axiosConfig,
       );
 
       if (res.status === 200) {
-        fetchPerson();
+        fetchProduct();
       }
     } catch (error) {
-      console.error("Error removing person", error);
+      console.error("Error removing product", error);
     }
   };
 
   useEffect(() => {
-    fetchPerson();
+    fetchProduct();
   }, []);
 
   return (
     <>
-      <UserAddDialog
+      <ProductAddDialog
         open={addDialog}
         setOpen={setAddDialog}
-        fetchPerson={fetchPerson}
+        fetchProduct={fetchProduct}
       />
       <main>
         <header>
@@ -176,11 +167,11 @@ export default function Users({ searchQuery }) {
                 <div className="sm:flex sm:items-center">
                   <div className="sm:flex-auto">
                     <h1 className="text-base font-semibold leading-6 text-white">
-                      Users
+                      Products
                     </h1>
                     <p className="mt-2 text-sm text-gray-300">
-                      A list of all the users including their role, name, email
-                      and age.
+                      A list of all the products including their id, name,
+                      section and price.
                     </p>
                   </div>
                   <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none">
@@ -189,7 +180,7 @@ export default function Users({ searchQuery }) {
                       className="block rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
                       onClick={() => setAddDialog(true)}
                     >
-                      Add user
+                      Add product
                     </button>
                   </div>
                   <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-none"></div>
@@ -204,7 +195,7 @@ export default function Users({ searchQuery }) {
                               scope="col"
                               className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0"
                             >
-                              Role
+                              Id
                             </th>
                             <th
                               scope="col"
@@ -216,25 +207,13 @@ export default function Users({ searchQuery }) {
                               scope="col"
                               className="px-3 py-3.5 text-left text-sm font-semibold text-white"
                             >
-                              Surname
+                              Section
                             </th>
                             <th
                               scope="col"
                               className="px-3 py-3.5 text-left text-sm font-semibold text-white"
                             >
-                              Email
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                            >
-                              Age
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                            >
-                              Gender
+                              Price
                             </th>
                             <th
                               scope="col"
@@ -244,37 +223,31 @@ export default function Users({ searchQuery }) {
                             </th>
                           </tr>
                         </thead>
-                        {person && person.length > 0 && (
+                        {product && product.length > 0 && (
                           <tbody className="divide-y divide-gray-800">
-                            {filteredPersons.map((person) => (
-                              <tr key={person.email}>
+                            {filteredProducts.map((product) => (
+                              <tr key={product.id}>
                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
-                                  {person.role}
+                                  {product.id}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                  {person.name}
+                                  {product.name}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                  {person.surname}
+                                  {product.section}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                  {person.email}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                  {person.age}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-300">
-                                  {person.gender}
+                                  {product.price}
                                 </td>
                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                   <a
                                     href="#"
                                     className="text-red-400 hover:text-indigo-300"
-                                    onClick={() => handleRemove(person)}
+                                    onClick={() => handleRemove(product)}
                                   >
                                     Remove
                                     <span className="sr-only">
-                                      , {person.name}
+                                      , {product.name}
                                     </span>
                                   </a>
                                 </td>

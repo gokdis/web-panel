@@ -1,16 +1,16 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { WifiIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import ErrorAlert from "../ErrorAlert";
 
-export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
+export default function ProductAddDialog({ open, setOpen, fetchProduct }) {
   const cancelButtonRef = useRef(null);
   const [formData, setFormData] = useState({
-    mac: "",
     id: "",
-    x: "",
-    y: "",
+    name: "",
+    section: "",
+    price: "",
   });
   const [emptyError, setEmptyError] = useState(false);
 
@@ -44,13 +44,11 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
       try {
         const formDataNew = {
           ...formData,
-          x: parseInt(formData.x, 10),
-          y: parseInt(formData.y, 10),
         };
 
         const jsonFormData = JSON.stringify(formDataNew);
         const res = await axios.post(
-          import.meta.env.VITE_REACT_APP_API + "/beacon",
+          import.meta.env.VITE_REACT_APP_API + "/product",
           jsonFormData,
           {
             headers: {
@@ -60,10 +58,10 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
           },
         );
 
-        fetchBeacon();
+        fetchProduct();
         setOpen(false);
       } catch (error) {
-        console.error("Error updating beacon", error);
+        console.error("Error updating product", error);
       }
     }
   };
@@ -106,7 +104,7 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                      <WifiIcon
+                      <ArchiveBoxIcon
                         className="h-6 w-6 text-green-600"
                         aria-hidden="true"
                       />
@@ -116,7 +114,7 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Add beacon
+                        Add product
                       </Dialog.Title>
                     </div>
                   </div>
@@ -126,30 +124,10 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
                 <div className="ml-4 mr-4">
                   <div className="mb-2">
                     <label
-                      htmlFor="mac"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      Mac
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        name="mac"
-                        id="mac"
-                        value={formData.mac}
-                        onChange={handleInputChange}
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="C7:10:69:07:FB:51"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-2">
-                    <label
                       htmlFor="id"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      Id
+                      ID
                     </label>
                     <div className="mt-2">
                       <input
@@ -159,47 +137,67 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
                         value={formData.id}
                         onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="10000"
+                        placeholder="1"
                       />
                     </div>
                   </div>
 
                   <div className="mb-2">
                     <label
-                      htmlFor="x"
+                      htmlFor="name"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      X
+                      Name
                     </label>
                     <div className="mt-2">
                       <input
                         type="text"
-                        name="x"
-                        id="x"
-                        value={formData.x}
+                        name="name"
+                        id="name"
+                        value={formData.name}
                         onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="5"
+                        placeholder="Cereal"
                       />
                     </div>
                   </div>
 
                   <div className="mb-2">
                     <label
-                      htmlFor="y"
+                      htmlFor="section"
                       className="block text-sm font-medium leading-6 text-gray-900"
                     >
-                      Y
+                      Sectiton
                     </label>
                     <div className="mt-2">
                       <input
                         type="text"
-                        name="y"
-                        id="y"
-                        value={formData.y}
+                        name="section"
+                        id="section"
+                        value={formData.section}
                         onChange={handleInputChange}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        placeholder="5"
+                        placeholder="Breakfast"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-2">
+                    <label
+                      htmlFor="price"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="price"
+                        id="price"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        placeholder="5.99"
                       />
                     </div>
                   </div>

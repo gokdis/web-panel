@@ -8,6 +8,7 @@ import {
   WifiIcon,
   ChartBarIcon,
   PencilIcon,
+  ArchiveBoxIcon,
 } from "@heroicons/react/24/outline";
 import Users from "./Users/Users";
 import Charts from "./Charts";
@@ -15,6 +16,7 @@ import Beacons from "./Beacons/Beacons";
 import Search from "./Search";
 import Metrics from "./Metrics";
 import Draw from "./Draw";
+import Products from "./Products/Products";
 
 const navigation = [
   {
@@ -30,6 +32,13 @@ const navigation = [
     current: false,
     icon: WifiIcon,
     component: "Beacons",
+  },
+  {
+    name: "Products",
+    href: "#",
+    current: false,
+    icon: ArchiveBoxIcon,
+    component: "Products",
   },
   {
     name: "Charts",
@@ -224,6 +233,7 @@ export default function App() {
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />
             )}
+            {activeComponent === "Products" && <Products />}
             {activeComponent === "Draw" && <Draw />}
             {activeComponent === "Metrics" && <Metrics />}
             {activeComponent === "Charts" && <Charts />}
