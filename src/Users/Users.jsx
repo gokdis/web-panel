@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import UserAddDialog from "./UserAddDialog";
 
 const statuses = {
@@ -112,6 +113,7 @@ export default function Users({ searchQuery }) {
         setOpen={setAddDialog}
         fetchPerson={fetchPerson}
       />
+      ,
       <main>
         <header>
           {/* Heading */}

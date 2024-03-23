@@ -2,7 +2,8 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
-//TODO: Give error on empty text fields
+import ErrorAlert from "../ErrorAlert";
+
 export default function UserAddDialog({ open, setOpen, fetchPerson }) {
   const cancelButtonRef = useRef(null);
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
     age: "",
     gender: "",
   });
+  const [emptyError, setEmptyError] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,28 +38,35 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
   }
 
   const handleFormSubmit = async () => {
-    try {
-      const formDataNew = {
-        ...formData,
-        age: parseInt(formData.age, 10),
-      };
+    const isEmptyField = Object.values(formData).some((value) => value === "");
 
-      const jsonFormData = JSON.stringify(formDataNew);
-      const res = await axios.post(
-        import.meta.env.VITE_REACT_APP_API + "/person",
-        jsonFormData,
-        {
-          headers: {
-            "Content-Type": "application/json",
+    if (isEmptyField) {
+      setEmptyError(true);
+    } else {
+      setEmptyError(false);
+      try {
+        const formDataNew = {
+          ...formData,
+          age: parseInt(formData.age, 10),
+        };
+
+        const jsonFormData = JSON.stringify(formDataNew);
+        const res = await axios.post(
+          import.meta.env.VITE_REACT_APP_API + "/person",
+          jsonFormData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            axiosConfig,
           },
-          axiosConfig,
-        },
-      );
+        );
 
-      fetchPerson();
-      setOpen(false);
-    } catch (error) {
-      console.error("Error updating user", error);
+        fetchPerson();
+        setOpen(false);
+      } catch (error) {
+        console.error("Error updating user", error);
+      }
     }
   };
 
@@ -65,9 +74,12 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-40"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={() => {
+          setOpen(false);
+          setEmptyError(false);
+        }}
       >
         <Transition.Child
           as={Fragment}
@@ -260,6 +272,13 @@ export default function UserAddDialog({ open, setOpen, fetchPerson }) {
                     <option>ROLE_MOD</option>
                   </select>
                 </div>
+
+                {emptyError && (
+                  <ErrorAlert
+                    errorHeader={"There was an error with your submission"}
+                    errorText={"There is an empty field."}
+                  />
+                )}
 
                 {/* Buttons */}
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

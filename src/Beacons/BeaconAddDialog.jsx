@@ -2,6 +2,7 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import ErrorAlert from "../ErrorAlert";
 
 export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
   const cancelButtonRef = useRef(null);
@@ -11,6 +12,7 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
     x: "",
     y: "",
   });
+  const [emptyError, setEmptyError] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,29 +35,36 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
   }
 
   const handleFormSubmit = async () => {
-    try {
-      const formDataNew = {
-        ...formData,
-        x: parseInt(formData.x, 10),
-        y: parseInt(formData.y, 10),
-      };
+    const isEmptyField = Object.values(formData).some((value) => value === "");
 
-      const jsonFormData = JSON.stringify(formDataNew);
-      const res = await axios.post(
-        import.meta.env.VITE_REACT_APP_API + "/beacon",
-        jsonFormData,
-        {
-          headers: {
-            "Content-Type": "application/json",
+    if (isEmptyField) {
+      setEmptyError(true);
+    } else {
+      setEmptyError(false);
+      try {
+        const formDataNew = {
+          ...formData,
+          x: parseInt(formData.x, 10),
+          y: parseInt(formData.y, 10),
+        };
+
+        const jsonFormData = JSON.stringify(formDataNew);
+        const res = await axios.post(
+          import.meta.env.VITE_REACT_APP_API + "/beacon",
+          jsonFormData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            axiosConfig,
           },
-          axiosConfig,
-        },
-      );
+        );
 
-      fetchBeacon();
-      setOpen(false);
-    } catch (error) {
-      console.error("Error updating beacon", error);
+        fetchBeacon();
+        setOpen(false);
+      } catch (error) {
+        console.error("Error updating beacon", error);
+      }
     }
   };
 
@@ -65,7 +74,10 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
         as="div"
         className="relative z-10"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={() => {
+          setOpen(false);
+          setEmptyError(false);
+        }}
       >
         <Transition.Child
           as={Fragment}
@@ -192,6 +204,13 @@ export default function BeaconAddDialog({ open, setOpen, fetchBeacon }) {
                     </div>
                   </div>
                 </div>
+
+                {emptyError && (
+                  <ErrorAlert
+                    errorHeader={"There was an error with your submission"}
+                    errorText={"There is an empty field."}
+                  />
+                )}
 
                 {/* Buttons */}
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
