@@ -7,12 +7,14 @@ import {
   ChartPieIcon,
   WifiIcon,
   ChartBarIcon,
+  PencilIcon,
 } from "@heroicons/react/24/outline";
 import Users from "./Users/Users";
 import Charts from "./Charts";
 import Beacons from "./Beacons/Beacons";
 import Search from "./Search";
 import Metrics from "./Metrics";
+import Draw from "./Draw";
 
 const navigation = [
   {
@@ -35,6 +37,13 @@ const navigation = [
     current: false,
     icon: ChartPieIcon,
     component: "Charts",
+  },
+  {
+    name: "Draw",
+    href: "#",
+    current: false,
+    icon: PencilIcon,
+    component: "Draw",
   },
   {
     name: "Metrics",
@@ -215,6 +224,7 @@ export default function App() {
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />
             )}
+            {activeComponent === "Draw" && <Draw />}
             {activeComponent === "Metrics" && <Metrics />}
             {activeComponent === "Charts" && <Charts />}
           </div>
