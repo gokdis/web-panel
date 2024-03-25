@@ -1,3 +1,4 @@
+import { Link, Router } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -46,13 +47,6 @@ const navigation = [
     current: false,
     icon: ChartPieIcon,
     component: "Charts",
-  },
-  {
-    name: "Draw",
-    href: "#",
-    current: false,
-    icon: PencilIcon,
-    component: "Draw",
   },
   {
     name: "Metrics",
@@ -216,6 +210,18 @@ export default function App() {
                         </a>
                       </li>
                     ))}
+                    <li key={"Draw"}>
+                      <a
+                        href={"/draw.html"}
+                        className="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                      >
+                        <PencilIcon
+                          className="h-6 w-6 shrink-0"
+                          aria-hidden="true"
+                        />
+                        Draw
+                      </a>
+                    </li>
                   </ul>
                 </li>
               </ul>
@@ -233,7 +239,9 @@ export default function App() {
             {activeComponent === "Beacons" && (
               <Beacons searchQuery={searchQuery} />
             )}
-            {activeComponent === "Products" && <Products />}
+            {activeComponent === "Products" && (
+              <Products searchQuery={searchQuery} />
+            )}
             {activeComponent === "Draw" && <Draw />}
             {activeComponent === "Metrics" && <Metrics />}
             {activeComponent === "Charts" && <Charts />}

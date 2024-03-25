@@ -34,7 +34,7 @@ export default function Products({ searchQuery }) {
   // TODO: Add id filtering
   const filteredProducts = product
     ? product.filter((item) =>
-        item.mac.toLowerCase().includes(searchQuery.toLowerCase()),
+        item.id.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : [];
 
@@ -76,11 +76,11 @@ export default function Products({ searchQuery }) {
   };
 
   const handleRemove = async (product) => {
-    const mac = product.mac;
+    const id = product.id;
 
     try {
       const res = await axios.delete(
-        import.meta.env.VITE_REACT_APP_API + "/product/" + mac,
+        import.meta.env.VITE_REACT_APP_API + "/product/" + id,
         axiosConfig,
       );
 
