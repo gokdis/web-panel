@@ -34,7 +34,7 @@ export default function Products({ searchQuery }) {
   // TODO: Add id filtering
   const filteredProducts = product
     ? product.filter((item) =>
-        item.id.toLowerCase().includes(searchQuery.toLowerCase()),
+        item.id.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 
@@ -54,15 +54,14 @@ export default function Products({ searchQuery }) {
       const startTime = performance.now();
 
       const res = await axios.get(
-        import.meta.env.VITE_REACT_APP_API + "/product",
-        axiosConfig,
+        import.meta.env.VITE_REACT_APP_API + "/product?pageSize=64",
+        axiosConfig
       );
 
       const endTime = performance.now();
       const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-
-      if (Array.isArray(res.data)) {
-        setProduct(res.data);
+      if (Array.isArray(res.data.content)) {
+        setProduct(res.data.content);
         setConnectTime(timeTaken);
         setServerStatus("success");
       } else {
@@ -81,7 +80,7 @@ export default function Products({ searchQuery }) {
     try {
       const res = await axios.delete(
         import.meta.env.VITE_REACT_APP_API + "/product/" + id,
-        axiosConfig,
+        axiosConfig
       );
 
       if (res.status === 200) {
@@ -138,9 +137,9 @@ export default function Products({ searchQuery }) {
                   statIdx % 2 === 1
                     ? "sm:border-l"
                     : statIdx === 2
-                      ? "lg:border-l"
-                      : "",
-                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8",
+                    ? "lg:border-l"
+                    : "",
+                  "border-t border-white/5 py-6 px-4 sm:px-6 lg:px-8"
                 )}
               >
                 <p className="text-sm font-medium leading-6 text-gray-400">
