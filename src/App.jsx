@@ -55,13 +55,6 @@ const navigation = [
     icon: ChartBarIcon,
     component: "Metrics",
   },
-  {
-    name: "Settings",
-    href: "#",
-    current: false,
-    icon: Cog6ToothIcon,
-    component: "Settings",
-  },
 ];
 
 function classNames(...classes) {

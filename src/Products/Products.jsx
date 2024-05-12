@@ -54,14 +54,14 @@ export default function Products({ searchQuery }) {
       const startTime = performance.now();
 
       const res = await axios.get(
-        import.meta.env.VITE_REACT_APP_API + "/product?pageSize=64",
+        import.meta.env.VITE_REACT_APP_API + "/product",
         axiosConfig
       );
 
       const endTime = performance.now();
       const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-      if (Array.isArray(res.data.content)) {
-        setProduct(res.data.content);
+      if (Array.isArray(res.data)) {
+        setProduct(res.data);
         setConnectTime(timeTaken);
         setServerStatus("success");
       } else {
